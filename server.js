@@ -3,6 +3,7 @@ const app = express();
 const session = require("express-session");
 const path = require("path");
 const myfun = require("./RoutesFunction/routesFunction");
+const fs = require("fs");
 
 
 app.use(express.json());
@@ -24,7 +25,16 @@ app.get("/" , function(req , res) {
         res.redirect("/login");
         return;
     }
-    res.sendFile(path.join(viewsPath, "main.html"));
+    // res.sendFile(path.join(viewsPath, "main.html"));
+    const username = req.session.username;
+    fs.readFile(path.join(__dirname, 'views', 'main.html'), 'utf8', (err, data) => {
+        if (err) {
+          res.status(500).send('Error reading the file');
+        } else {
+            const moddata = data.replace('{{username}}', username);
+          res.send(moddata);
+        }
+    });
 });
 
 app.post("/todo", function (req, res) {
@@ -171,15 +181,30 @@ app.get("/todo" , function(req , res) {
 });
 
 app.get("/delete-todo" , function(req , res) {
-    res.sendFile(__dirname + "./views/main.html");
+    if(!req.session.isloggedin)
+    {
+        res.redirect("/login");
+        return;
+    }
+    res.sendFile(__dirname + "/views/main.html");
 });
 
 app.get("/edit-todo" , function(req , res) {
-    res.sendFile(__dirname + "./views/main.html");
+    if(!req.session.isloggedin)
+    {
+        res.redirect("/login");
+        return;
+    }
+    res.sendFile(__dirname + "/views/main.html");
 });
 
 app.get("/edit-text-todo" , function(req , res) {
-    res.sendFile(__dirname + "./views/main.html");
+    if(!req.session.isloggedin)
+    {
+        res.redirect("/login");
+        return;
+    }
+    res.sendFile(__dirname + "/views/main.html");
 });
 
 
