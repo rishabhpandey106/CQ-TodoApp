@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Rishabh Pandey</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2; 
+        }
+
+        .todo-container {
+            width: 356px;
+            padding: 29px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 87px;
+        }
+
+        .task-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .add-button {
+            width: 32%;
+            padding: 10px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .task-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .delete-button {
+            background-color: #DC3545;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .navbar {
+        background-color: #333; /* Background color of the navbar */
+        display: flex; /* Use flexbox to position the navbar items */
+        justify-content: flex-start; /* Align items to the left */
+        padding: 10px; /* Optional padding for the navbar */
+        position: fixed; /* Fix the navbar position on the page */
+        top: 0; /* Position it at the top of the page */
+        left: 0; /* Position it at the left of the page */
+        width: 100%; /* Set the width to 100% to span the entire page */
+        }
+
+        .navbar a {
+        color: #fff; /* Text color of the links */
+        text-decoration: none; /* Remove underline from links */
+        padding: 10px 20px; /* Add padding to the links */
+        }
+
+        .navbar a:hover {
+        background-color: #555; /* Background color of links on hover */
+        }
+
+        /* mjhjgbuhgbugg */
+
+        /* Container for the entire todo section */
+        .todo-container {
+        display: flex; /* Use flexbox to create a horizontal layout */
+        align-items: center; /* Vertically center the items */
+        justify-content: space-between; /* Distribute items horizontally */
+        max-width: 800px; /* Set the maximum width for the container */
+        margin: 0 auto; /* Center the container horizontally */
+        padding: 20px; /* Add some padding inside the container */
+        }
+
+        .task-input {
+        flex: 1; /* Allow the input to grow and take available space */
+        padding: 8px; /* Add padding to the input field */
+        font-size: 16px;
+        }
+
+        .add-button {
+        padding: 8px 16px; /* Add padding to the button */
+        font-size: 16px;
+        background-color: #4CAF50; /* Customize the button color */
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+        }
+
+        .task-list {
+        list-style-type: none; /* Remove the default list-style */
+        padding: 0; /* Remove default padding */
+        margin: 0; /* Remove default margin */
+        max-width: 800px; /* Set the maximum width for the list */
+        margin: 20px auto; /* Center the list horizontally */
+        list-style-type: none; /* Remove the default list-style */
+        }
+
+        .todoitems {
+        display: flex; /* Use flexbox to align items */
+        align-items: center; /* Vertically center the items */
+        justify-content: space-between; /* Distribute items horizontally */
+        margin-bottom: 10px; /* Add some space between each item */
+        }
+
+        .text {
+        margin-right: 10px; /* Add some space to the right of the text */
+        }
+
+        .checkbox {
+        margin-right: 10px; /* Add some space to the right of the checkbox */
+        }
+
+        .deletebtn {
+        background-color: #f44336; /* Customize the delete button style */
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        cursor: pointer;
+        border-radius: 4px;
+        }
+
+        .task-container {
+            overflow: scroll;
+            height: 70%;
+            border: 2px solid #3DDC8D;
+            border-radius: 10px;
+            margin-right: 100px;
+            background-color: white;
+            box-shadow: 0 0 5px #000;
+        }
+
+        .task-container:hover {
+            transition: .2s;
+            box-shadow: 0 3px 100px rgba(33, 228, 75, 0.995);
+        }
+
+        .task-container::-webkit-scrollbar,.task-container::-webkit-scrollbar-corner {
+            background-color: transparent;
+        }
+
+        .task-container ul {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/">Home</a>
+        <a href="/contact">Contact</a>
+        <a href="/about">About</a>
+        <a href="/todo">Todo</a>
+    </nav>
+
+    <div class="todo-container">
+        <input type="text" class="task-input" placeholder="Enter a task" id="inputtask">
+        <button class="add-button" id="addbtn">Add</button>
+        
+    </div>
+    <div class="task-container">
+        <ul class="task-list" id="tasklist">
+        </ul>
+    </div>
+    <script src="/js/main.js"></script>
+</body>
+</html>
