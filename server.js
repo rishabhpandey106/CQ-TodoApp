@@ -10,6 +10,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("./static"));
 
+app.set("view engine" , "ejs");
+app.set("views" , __dirname + "/templates");
+
 app.use(session({
     secret: 'portlaport',
     resave: false,
@@ -26,15 +29,19 @@ app.get("/" , function(req , res) {
         return;
     }
     // res.sendFile(path.join(viewsPath, "main.html"));
-    const username = req.session.username;
-    fs.readFile(path.join(__dirname, 'views', 'main.html'), 'utf8', (err, data) => {
-        if (err) {
-          res.status(500).send('Error reading the file');
-        } else {
-            const moddata = data.replace('{{username}}', username);
-          res.send(moddata);
-        }
-    });
+    const name = req.session.username;
+    res.render("main", {username : name});
+
+
+    // const username = req.session.username;
+    // fs.readFile(path.join(__dirname, 'views', 'main.html'), 'utf8', (err, data) => {
+    //     if (err) {
+    //       res.status(500).send('Error reading the file');
+    //     } else {
+    //         const moddata = data.replace('{{username}}', username);
+    //       res.send(moddata);
+    //     }
+    // });
 });
 
 app.post("/todo", function (req, res) {
@@ -110,8 +117,14 @@ app.post("/login" , function(req , res) {
             }
             else
             {
+                // using when sending status code and a error message on another page
                 // return res.status(401).json({ success: false, message: 'Invalid credentials' });
-                res.send('<script>alert("Invalid credentials. Please try again."); window.location="/login";</script>');
+
+                // using template engine like ejs.
+                res.render("login" , {error : "Invalid Username or Password"});
+
+                // using to show username on page without using server side rendering i.e. template engine.
+                // res.send('<script>alert("Invalid credentials. Please try again."); window.location="/login";</script>');
             }
         }
     });
@@ -164,7 +177,8 @@ app.get("/contact", function (req, res) {
 });
 
 app.get("/login" , function(req , res) {
-    res.sendFile(__dirname + "/login.html");
+    // res.sendFile(__dirname + "/login.html");
+    res.render("login" , {error : null});
 });
 
 app.get("/signup" , function(req , res) {
@@ -177,7 +191,8 @@ app.get("/todo" , function(req , res) {
         res.redirect("/login");
         return;
     }
-    res.sendFile(__dirname + "/views/main.html");
+    // res.sendFile(__dirname + "/views/main.html");
+    res.render("main" , {username : req.session.username});
 });
 
 app.get("/delete-todo" , function(req , res) {
