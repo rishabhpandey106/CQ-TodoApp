@@ -1,6 +1,7 @@
 const submitbtn = document.getElementById("addbtn");
 const usertext = document.getElementById("inputtask");
 const task = document.getElementById("tasklist");
+const image = document.getElementById("task-img");
 
 submitbtn.addEventListener("click" , function () {
     const tasktext = usertext.value;
@@ -11,28 +12,50 @@ submitbtn.addEventListener("click" , function () {
         return;
     }
 
-    const todo = {
-        tasktext,
-        completed : false
-    };
+    // const todo = {
+    //     tasktext,
+    //     completed : false,
+    //     taskimg : null
+    // };
 
-    fetch("/todo" , {
+    const formData = new FormData();
+    formData.append("task-img", image.files[0]);
+
+    fetch("/upload-image", {
         method: "POST",
-        headers: {
-            "Content-Type" : "application/json"
-        },
-        body : JSON.stringify(todo)
-    }).then(function(response) {
-        if(response.status == 200)
-        {
-            showtasks(todo);
-            usertext.value = "";
-        }
-        else
-        {
-            alert("error error error");
+        body: formData,
+    })
+    .then(function (response) {
+        if (response.status === 200) {
+        return response.json();
+        } else {
+        alert("Error uploading image");
         }
     })
+    .then(function (data) {
+        const todo = {
+        tasktext,
+        completed: false,
+        taskimg: data.imageUrl,
+        };
+
+        fetch("/todo", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(todo),
+        }).then(function (response) {
+        if (response.status == 200) {
+            todo.taskimg = data.imageUrl;
+            showtasks(todo);
+            usertext.value = "";
+            image.value = "";
+        } else {
+            alert("error error error");
+        }
+        });
+    });
 });
 
 function showtasks(todo)
@@ -53,6 +76,20 @@ function showtasks(todo)
     checknode.classList = 'checkbox';
     checknode.checked = false;
 
+    
+    const imgnode = document.createElement("img");
+    imgnode.classList = 'taskimage';
+    // imgnode.src = `http://localhost:5500/${todo.taskimg}`;
+    if (todo.taskimg) {
+        imgnode.src = `http://localhost:5500/${todo.taskimg}`;
+    } 
+    else {
+        // imgnode.style.display = 'none';
+        imgnode.src = `https://www.kindpng.com/picc/m/130-1300217_user-icon-member-icon-png-transparent-png.png`;
+    }
+
+    
+
     if(todo.completed)
     {
         tasktextnode.style.textDecoration = "line-through";
@@ -60,6 +97,7 @@ function showtasks(todo)
         checknode.checked = true;
     }
 
+    tasknode.appendChild(imgnode);
     tasknode.appendChild(tasktextnode);
     tasknode.appendChild(checknode);
     tasknode.appendChild(delnode);
@@ -88,72 +126,131 @@ function checkuncheck(event)
     const parentDiv = checkbox.closest('.todoitems');
     const todo_itemelem = parentDiv.querySelector('.text');
 
+    // if(checkbox.checked)
+    // {
+    //     todo_itemelem.style.textDecoration = 'line-through';
+    //     todo_itemelem.style.color = 'grey';
+    //     const data = {
+    //         filePath: './task.json',
+    //         property: 'completed',
+    //         value: true,
+    //         itemName :todo_itemelem.innerText
+    //     };
+
+    //     fetch('/edit-todo' , {
+    //         method : "POST",
+    //         headers : {
+    //             "Content-Type" : "application/json"
+    //         },
+    //         body : JSON.stringify(data)
+    //     }).then(function(response) {
+    //         if(response.status === 200)
+    //         {
+    //             console.log("success");
+    //         }
+    //         else
+    //         {
+    //             alert("error error error");
+    //         }
+    //     });
+    // }
+    // else
+    // {
+    //     todo_itemelem.style.textDecoration = 'none';
+    //     todo_itemelem.style.color = 'grey';
+
+    //     const data = {
+    //         filePath: './task.json',
+    //         property: 'completed',
+    //         value: false,
+    //         itemName :todo_itemelem.innerText
+    //     };
+
+    //     fetch('/edit-todo' , {
+    //         method : "POST",
+    //         headers : {
+    //             "Content-Type" : "application/json"
+    //         },
+    //         body : JSON.stringify(data)
+    //     }).then(function(response) {
+    //         if(response.status === 200)
+    //         {
+    //             console.log("success");
+    //         }
+    //         else
+    //         {
+    //             alert("error error error");
+    //         }
+    //     });
+    // }
+
     if(checkbox.checked)
     {
         todo_itemelem.style.textDecoration = 'line-through';
         todo_itemelem.style.color = 'grey';
-        const data = {
-            filePath: './task.json',
-            property: 'completed',
-            value: true,
-            itemName :todo_itemelem.innerText
-        };
-
-        fetch('/edit-todo' , {
-            method : "POST",
-            headers : {
-                "Content-Type" : "application/json"
-            },
-            body : JSON.stringify(data)
-        }).then(function(response) {
-            if(response.status === 200)
-            {
-                console.log("success");
-            }
-            else
-            {
-                alert("error error error");
-            }
-        });
     }
     else
     {
         todo_itemelem.style.textDecoration = 'none';
-        todo_itemelem.style.color = 'grey';
-
-        const data = {
-            filePath: './task.json',
-            property: 'completed',
-            value: false,
-            itemName :todo_itemelem.innerText
-        };
-
-        fetch('/edit-todo' , {
-            method : "POST",
-            headers : {
-                "Content-Type" : "application/json"
-            },
-            body : JSON.stringify(data)
-        }).then(function(response) {
-            if(response.status === 200)
-            {
-                console.log("success");
-            }
-            else
-            {
-                alert("error error error");
-            }
-        });
+        todo_itemelem.style.color = 'black';
     }
+
+    const data = {
+        property: 'completed',
+        value: checkbox.checked,
+        itemName: todo_itemelem.innerText,
+    };
+
+    fetch('/edit-todo', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+    })
+    .then(function (response) {
+    if (response.status === 200) {
+        console.log('success');
+    } else {
+        alert('error error error');
+    }
+    });
+
 }
 
 function removetask(event)
 {
     const parentdiv = this.parentNode;
+
+    const imgNode = parentdiv.querySelector('.taskimage');
+    const imgURL = imgNode ? imgNode.src : null;
+    const imgurl = imgURL.replace('http://localhost:5500', '');
+    const newurl = `/todoapp${imgurl}`;
     parentdiv.remove();
     const todo_itemelem = parentdiv.querySelector('.text');
     const todo_item = todo_itemelem.innerText;
     console.log(todo_item);
+
+    // fetch('/delete-todo' , {
+    //     method : "POST",
+    //     headers : {
+    //     "Content-Type": "application/json"
+    //     },
+    //     body : JSON.stringify({
+    //         filePath : './task.json',
+    //         property : 'tasktext',
+    //         value : todo_item
+    //     })
+    // }).then(function(response) {
+    //     if(response.status === 200)
+    //     {
+    //         console.log("success");
+    //     }
+    //     else
+    //     {
+    //         alert("error error error");
+    //     }
+    // });
 
     fetch('/delete-todo' , {
         method : "POST",
@@ -161,9 +258,9 @@ function removetask(event)
         "Content-Type": "application/json"
         },
         body : JSON.stringify({
-            filePath : './task.json',
             property : 'tasktext',
-            value : todo_item
+            value : todo_item,
+            img : newurl
         })
     }).then(function(response) {
         if(response.status === 200)
@@ -284,4 +381,6 @@ fetch('/todo-data').then(function(response) {
     todos.forEach(function(todo) {
         showtasks(todo);
     })
-})
+}).catch(function (error) {
+    alert(error.message);
+});

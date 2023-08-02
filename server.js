@@ -4,11 +4,28 @@ const session = require("express-session");
 const path = require("path");
 const myfun = require("./RoutesFunction/routesFunction");
 const fs = require("fs");
+const db = require("./models/db");
+const taskmodel = require("./models/task");
+const multer = require("multer");
 
+const multerstorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "uploads/");
+    },
+    filename: function (req, file, cb) {
+        const fileExtension = file.originalname.split(".").pop();
+        const uniqueFileName = Date.now() + "-" + file.fieldname + "." + fileExtension;
+        cb(null, uniqueFileName);
+    },
+});
+
+const upload = multer({ storage : multerstorage });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("./static"));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(upload.single("task-img"));
 
 app.set("view engine" , "ejs");
 app.set("views" , __dirname + "/templates");
@@ -49,41 +66,84 @@ app.post("/todo", function (req, res) {
     {
         res.status(401).send("error");
         return;
-    }
-    myfun.savetask(req.body, function (err) {
-      if (err) {
+    } 
+
+    // myfun.savetask( req.body , function (err) {
+    //   if (err) {
+    //     res.status(500).send("error");
+    //     return;
+    //   }
+    //   res.status(200).send("success");
+    // });
+
+    taskmodel.create(req.body).then(function () {
+        res.status(200).send("success");
+    }).catch(function (error) {
         res.status(500).send("error");
-        return;
-      }
-      res.status(200).send("success");
     });
+});
+
+app.post("/upload-image", function (req, res) {
+    if (!req.session.isloggedin) {
+      res.status(401).send("error");
+      return;
+    }
+    const imgname = req.file;
+    const imageUrl = imgname ? `uploads/${imgname.filename}` : null;
+    // const imageUrl = imgname ? imgname.path : null;
+    console.log(req.body);
+    console.log(req.file);
+    res.status(200).json({ imageUrl });
 });
 
 
 app.post("/delete-todo" , function(req , res) { 
-    const { filePath, property, value } = req.body;
-    myfun.deletetask({ filePath, property, value } , function(err) {
-        if (err) {
-            res.status(500).send("error");
+    const {property, value , img } = req.body;
+    // const { filePath, property, value } = req.body;
+    // myfun.deletetask({ filePath, property, value } , function(err) {
+    //     if (err) {
+    //         res.status(500).send("error");
+    //     }
+    //     else
+    //     {
+    //         res.status(200).send("success");
+    //     }
+    // });
+    console.log(img);
+    taskmodel.deleteOne({tasktext : value}).then(function () {
+        if (img) {
+            fs.unlink(img, (err) => {
+                if (err) {
+                    console.error(err);
+                }
+            });
         }
-        else
-        {
-            res.status(200).send("success");
-        }
+        res.status(200).send("success");
+    }).catch(function (error) {
+        res.status(500).send("error");
     });
 });
 
 app.post("/edit-todo", function (req, res) {
-    const { filePath, property, value, itemName } = req.body;
-    myfun.edittask({ filePath, property, value, itemName }, function (err) {
-      if (err) {
+    const { property, value, itemName } = req.body;
+
+    // const { filePath, property, value, itemName } = req.body;
+    // myfun.edittask({ filePath, property, value, itemName }, function (err) {
+    //   if (err) {
+    //     res.status(500).send("error");
+    //   }
+    //   else
+    //   {
+    //     res.status(200).send("success");
+    //   }
+    // });
+
+    taskmodel.updateOne({tasktext : itemName} , { $set: { [property] : value} }).then(async function () {
+        const tasks = await taskmodel.find();
+        res.status(200).json(tasks);
+    }).catch(function (error) {
         res.status(500).send("error");
-      }
-      else
-      {
-        res.status(200).send("success");
-      }
-    });
+    }); 
 });
 
 app.post("/edit-text-todo", function (req, res) {
@@ -143,19 +203,27 @@ app.post("/signup" , function(req , res) {
     })
 });
 
-app.get("/todo-data", function (req, res) {
+app.get("/todo-data", async function (req, res) {
     if(!req.session.isloggedin)
     {
         res.status(401).send("error");
         return;
     }
-    myfun.readtask(function (err , data) {
-      if (err) {
-        res.status(500).send("error");
-        return;
-      }
-      res.status(200).json(data);
-    });
+
+    // myfun.readtask(function (err , data) {
+    //   if (err) {
+    //     res.status(500).send("error");
+    //     return;
+    //   }
+    //   res.status(200).json(data);
+    // });
+
+    try {
+        const tasks = await taskmodel.find();
+        res.status(200).json(tasks);
+    } catch (err) {
+        res.status(500).json({ error: 'Error fetching tasks' });
+    }
 });
 
 app.get("/about", function (req, res) {
@@ -222,9 +290,14 @@ app.get("/edit-text-todo" , function(req , res) {
     res.sendFile(__dirname + "/views/main.html");
 });
 
-
-
-app.listen(5500 , function () {
-    console.log("local host 5500");
+db.init().then(function () {
+    console.log("database connected");
+    app.listen(5500 , function () {
+        console.log("local host 5500");
+    });
+}).catch(function(error) {
+    console.log(error);
 });
+
+
 

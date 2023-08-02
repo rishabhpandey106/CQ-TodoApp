@@ -23,7 +23,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 87px;
+            height: 150px;
         }
 
         .task-input {
@@ -35,6 +35,9 @@
             margin-bottom: 10px;
         }
 
+        .task-img {
+            padding: 10px;
+        }
         .add-button {
             width: 32%;
             padding: 10px;
@@ -44,6 +47,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-top: 5px;
         }
 
         .task-list {
@@ -92,6 +96,7 @@
         background-color: #555; /* Background color of links on hover */
         }
 
+        
         /* mjhjgbuhgbugg */
 
         /* Container for the entire todo section */
@@ -102,13 +107,15 @@
         max-width: 800px; /* Set the maximum width for the container */
         margin: 0 auto; /* Center the container horizontally */
         padding: 20px; /* Add some padding inside the container */
+        margin-bottom: 10px;
         }
 
         .task-input {
         flex: 1; /* Allow the input to grow and take available space */
         padding: 8px; /* Add padding to the input field */
-        font-size: 16px;
+        font-size: 20px;
         }
+
 
         .add-button {
         padding: 8px 16px; /* Add padding to the button */
@@ -118,6 +125,11 @@
         border: none;
         cursor: pointer;
         border-radius: 4px;
+        padding: 10px 20px;
+        }
+
+        .add-button:hover {
+            background-color: #56c759;
         }
 
         .task-list {
@@ -157,6 +169,11 @@
         border-radius: 4px;
         }
 
+        .deletebtn:hover {
+            background-color: rgb(242, 213, 213);
+            color: #f44336;
+        }
+
         .task-container {
             overflow: scroll;
             height: 70%;
@@ -179,6 +196,10 @@
         .task-container ul {
             margin-left: 10px;
         }
+        img {
+            width: 20px;
+            padding-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -194,15 +215,17 @@
         <!-- <span style="color : #96f254;border: 1px solid #3f0707;box-shadow: 0 0 5px #000;width: fit-content;padding: 10px;">{{username}}</span> -->
     </nav>
 
-    <div class="todo-container">
-        <input type="text" class="task-input" placeholder="Enter a task" id="inputtask">
-        <button class="add-button" id="addbtn">Add</button>
-        
-    </div>
+        <div class="todo-container">
+            <input type="text" class="task-input" placeholder="Enter a task" id="inputtask">
+            <input type="file" class="task-img" id="task-img">
+            <button class="add-button" id="addbtn">Add</button>
+        </div>
+    
     <div class="task-container">
         <ul class="task-list" id="tasklist">
         </ul>
     </div>
+    
     <script src="/js/main.js"></script>
 </body>
 </html>

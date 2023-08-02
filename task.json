@@ -28,27 +28,32 @@
     "completed": true
   },
   {
-    "tasktext": "bsbsbsbsbsb",
-    "completed": false
-  },
-  {
     "tasktext": "bsbsbsbsbsbbsb",
     "completed": false
   },
   {
-    "tasktext": "rwa",
-    "completed": false
+    "tasktext": "dwdw",
+    "completed": false,
+    "taskimg": "../uploads/1690790774293-task-img.png"
   },
   {
-    "tasktext": "rwar",
-    "completed": false
+    "tasktext": "qqqqqquh",
+    "completed": false,
+    "taskimg": "uploads\\1690790890741-task-img.png"
   },
   {
-    "tasktext": "fawf",
-    "completed": false
+    "tasktext": "dawd",
+    "completed": false,
+    "taskimg": "uploads\\1690790997355-task-img.png"
   },
   {
-    "tasktext": "gs",
-    "completed": false
+    "tasktext": "wwww",
+    "completed": false,
+    "taskimg": "uploads\\1690791892727-task-img.png"
+  },
+  {
+    "tasktext": "wedcs",
+    "completed": false,
+    "taskimg": null
   }
 ]

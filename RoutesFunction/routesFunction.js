@@ -61,7 +61,6 @@ function deletetask({filePath, property, value })
             const jsonData = JSON.parse(data);
             const filterdata = jsonData.filter(item => item[property] !== value);
             const updateddata = JSON.stringify(filterdata,null,2);
-
             fs.writeFile(filePath , updateddata , 'utf8' , (err) => {
                 if(err)
                 {
