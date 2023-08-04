@@ -147,16 +147,26 @@ app.post("/edit-todo", function (req, res) {
 });
 
 app.post("/edit-text-todo", function (req, res) {
-    const { filePath, property, value, itemName } = req.body;
-    myfun.edittasktext({ filePath, property, value, itemName }, function (err) {
-      if (err) {
+    const { property, value, itemName } = req.body;
+
+    // const { filePath, property, value, itemName } = req.body;
+    // myfun.edittasktext({ filePath, property, value, itemName }, function (err) {
+    //   if (err) {
+    //     res.status(500).send("error");
+    //   }
+    //   else
+    //   {
+    //     res.status(200).send("success");
+    //   }
+    // });
+
+    taskmodel.updateOne({tasktext : itemName} , { $set: { [property] : value} }).then(async function () {
+        const tasks = await taskmodel.find();
+        res.status(200).json(tasks);
+    }).catch(function (error) {
         res.status(500).send("error");
-      }
-      else
-      {
-        res.status(200).send("success");
-      }
-    });
+    }); 
+
 });
 
 app.post("/login" , function(req , res) {

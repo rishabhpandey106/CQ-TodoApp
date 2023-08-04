@@ -277,7 +277,7 @@ function removetask(event)
 function editthetext(event) {
     const taskTextElement = event.target;
     const currentTaskText = taskTextElement.innerText;
-  
+    // let isediting = true;
     const inputField = document.createElement('input');
     inputField.type = 'text';
     inputField.classList = 'edit-input';
@@ -287,11 +287,11 @@ function editthetext(event) {
     parentDiv.replaceChild(inputField, taskTextElement);
   
     inputField.addEventListener('keypress', function (event) {
-        let isediting = true;
+        
       if (event.key === 'Enter') {
         const updatedTaskText = inputField.value;
         const data = {
-          filePath: './task.json',
+        //   filePath: './task.json',
           property: 'tasktext',
           value: updatedTaskText,
           itemName: currentTaskText
@@ -310,63 +310,65 @@ function editthetext(event) {
             alert('Error updating task text');
           }
         }).then(function(updateddata) {
-            taskTextElement.innerText = updateddata.tasktext;
+            taskTextElement.innerText = updatedTaskText;
             // const checkbox = parentDiv.querySelector('.checkbox');
             // checkbox.checked = updateddata.completed;
             parentDiv.replaceChild(taskTextElement, inputField);
-            isediting = false;
+            // isediting = false;
+           
         });
       }
     });
   
-    inputField.addEventListener('blur', function () {
-      const updatedTaskText = inputField.value;
-      const data = {
-        filePath: './task.json',
-        property: 'tasktext',
-        value: updatedTaskText,
-        itemName: currentTaskText
-      };
+    // inputField.addEventListener('blur', function () {
+    //   const updatedTaskText = inputField.value;
+    //   const data = {
+    //     // filePath: './task.json',
+    //     property: 'tasktext',
+    //     value: updatedTaskText,
+    //     itemName: currentTaskText
+    //   };
   
-      fetch('/edit-text-todo', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      }).then(function (response) {
-        if (response.status === 200) {
-          return response.json();
-        } else {
-          alert('Error updating task text');
-        }
-      }).then(function(updateddata) {
-        taskTextElement.innerText = updateddata.tasktext;
-        // const checkbox = parentDiv.querySelector('.checkbox');
-        // checkbox.checked = updateddata.completed
+    //   fetch('/edit-text-todo', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify(data)
+    //   }).then(function (response) {
+    //     if (response.status === 200) {
+    //       return response.json();
+    //     } else {
+    //       alert('Error updating task text');
+    //     }
+    //   }).then(function(updateddata) {
+    //     taskTextElement.innerText = updateddata.tasktext;
+    //     // const checkbox = parentDiv.querySelector('.checkbox');
+    //     // checkbox.checked = updateddata.completed
 
-        parentDiv.replaceChild(taskTextElement, inputField);
-        isediting = false;
-      });
-    });
+    //     parentDiv.replaceChild(taskTextElement, inputField);
+    //     // isediting = false;
+    //   });
+    // });
   
-    inputField.focus();
+    // inputField.focus();
 
-    inputField.addEventListener('click', function (event) {
-        event.stopPropagation();
-        isEditing = true;
-    });
+    // inputField.addEventListener('click', function (event) {
+    //     event.stopPropagation();
+    //     isediting = true;
+    // });
     
-    document.addEventListener('click', function () {
-    if (isEditing) {
-        // If the flag is true, disable the input field
-        taskTextElement.innerText = updateddata.tasktext;
-        parentDiv.replaceChild(taskTextElement, inputField);
-        isEditing = false;
-    }
+    // document.addEventListener('click', function () {
+    // if (isediting) {
+    //     // If the flag is true, disable the input field
+    //     taskTextElement.innerText = updateddata.tasktext;
+    //     parentDiv.replaceChild(taskTextElement, inputField);
+    //     isediting = false;
+    // }
 
-    });
+    // });
 }
+
 
 fetch('/todo-data').then(function(response) {
     if(response.status === 200)
